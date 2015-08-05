@@ -24,6 +24,12 @@ Free.liftFC = function(c) {
     return Free.Join(Coyoneda.liftCoyoneda(c).map(Free.Of));
 };
 
+Free.runFC = function(m, f) {
+    return m.foldMap(m, function(coyo) {
+        return f(coyo.value()).map(coyo.func());
+    });
+};
+
 Free.prototype.chain = function(f) {
     return Free.Chain(this, f);
 };
@@ -91,12 +97,6 @@ Free.prototype.resume = function() {
                 }
             });
         }
-    });
-};
-
-Free.prototype.runFC = function(m, f) {
-    return this.foldMap(m, function(coyo) {
-        return f(coyo.value()).map(coyo.func());
     });
 };
 

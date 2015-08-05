@@ -63,11 +63,11 @@ Request.prototype.toString = function() {
 };
 
 function pure(x) {
-    return Free.liftF(Request.Pure(x));
+    return Free.liftFC(Request.Pure(x));
 }
 
 function fetch(s) {
-    return Free.liftF(Request.Fetch(s));
+    return Free.liftFC(Request.Fetch(s));
 }
 
 function singleton(k, v) {
@@ -138,10 +138,7 @@ function getUser(id) {
             });
         });
 
-    function run() {
-        return free.runFC(free, interpreter);
-    }
-
-    run();
-
+    console.log('--------------------------------');
+    console.log(Free.runFC(free, interpreter));
+    console.log('--------------------------------');
 })()
