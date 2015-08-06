@@ -5,6 +5,7 @@ var combinators = require('fantasy-combinators'),
     Either = require('fantasy-eithers'),
     Coyoneda = require('./coyoneda'),
 
+    compose = combinators.compose,
     constant = combinators.constant,
     point    = sorcery.point,
 
@@ -34,6 +35,14 @@ Free.prototype.chain = function(f) {
     return Free.Chain(this, f);
 };
 
+Free.prototype.ap = function(x) {
+    return this.chain(x.map);
+};
+
+Free.prototype.map = function(f) {
+    return this.chain(compose(Free.of)(f));
+};
+
 Free.prototype.andThen = function(x) {
     return this.chain(constant(x));
 };
@@ -48,10 +57,10 @@ Free.prototype.step = function() {
         Join: Free.Join,
         Chain: function(x, f) {
             return x.cata({
-                Of   : function(x) {
+                Of: function(x) {
                     return f(x).step();
                 },
-                Join : Free.Join,
+                Join: Free.Join,
                 Chain: function(y, g) {
                     return y.chain(function(z) {
                         return g(z).chain(f);
